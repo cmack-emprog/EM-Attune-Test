@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attune — EventMobi Support</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B00;
+      --orange-light: #FF8C33;
+      --orange-pale: #FFF3EA;
+      --white: #FFFFFF;
+      --grey-50: #F8F9FA;
+      --grey-100: #F1F3F5;
+      --grey-200: #E9ECEF;
+      --grey-400: #ADB5BD;
+      --grey-600: #6C757D;
+      --grey-800: #343A40;
+      --green: #28A745;
+      --green-bg: #E8F5E9;
+      --amber: #F59E0B;
+      --amber-bg: #FFFBEB;
+      --red: #DC3545;
+      --red-bg: #FEE2E2;
+      --radius: 10px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--grey-50);
+      color: var(--grey-800);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--orange);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 64px;
+      gap: 16px;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-text {
+      font-size: 20px; font-weight: 700;
+      color: var(--grey-800); letter-spacing: -0.3px;
+    }
+    .logo-text span { color: var(--orange); }
+
+    .logo-divider { width: 1px; height: 24px; background: var(--grey-200); }
+
+    .logo-sub { font-size: 13px; color: var(--grey-600); font-weight: 500; }
+
+    .header-right { margin-left: auto; }
+
+    .key-indicator {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--grey-600);
+      cursor: pointer; padding: 6px 12px;
+      border: 1px solid var(--grey-200); border-radius: 6px;
+      background: var(--grey-50); transition: background 0.15s;
+    }
+    .key-indicator:hover { background: var(--grey-100); }
+    .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey-400); }
+    .key-dot.active { background: var(--green); }
+
+    /* API KEY MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 24px;
+    }
+    .modal-overlay.hidden { display: none; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 32px;
+      max-width: 480px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .modal p { font-size: 13px; color: var(--grey-600); line-height: 1.6; margin-bottom: 20px; }
+
+    .modal label { font-size: 12px; font-weight: 600; color: var(--grey-600); display: block; margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+    .modal input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--grey-200); border-radius: 8px;
+      font-size: 14px; font-family: monospace;
+      color: var(--grey-800); background: var(--grey-50);
+      transition: border-color 0.15s; margin-bottom: 8px;
+    }
+    .modal input:focus { outline: none; border-color: var(--orange); background: white; }
+
+    .modal-hint { font-size: 11px; color: var(--grey-400); margin-bottom: 20px; line-height: 1.5; }
+
+    .btn-primary {
+      width: 100%; background: var(--orange); color: white;
+      border: none; border-radius: 8px; padding: 12px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--orange-light); }
+
+    /* APP */
+    .app {
+      max-width: 1100px; margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid; gap: 24px;
+    }
+
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 10px;
+    }
+
+    .card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 28px;
+    }
+
+    .card-title { font-size: 17px; font-weight: 600; color: var(--grey-800); margin-bottom: 6px; }
+    .card-subtitle { font-size: 13px; color: var(--grey-600); margin-bottom: 16px; line-height: 1.5; }
+
+    textarea {
+      width: 100%; min-height: 160px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--grey-200); border-radius: 8px;
+      font-size: 14px; line-height: 1.6; color: var(--grey-800);
+      resize: vertical; font-family: inherit;
+      transition: border-color 0.15s; background: var(--grey-50);
+    }
+    textarea:focus { outline: none; border-color: var(--orange); background: white; }
+    textarea::placeholder { color: var(--grey-400); }
+
+    .input-footer {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-top: 14px; gap: 12px;
+    }
+
+    .char-count { font-size: 12px; color: var(--grey-400); }
+
+    .btn-analyse {
+      background: var(--orange); color: white; border: none;
+      border-radius: 8px; padding: 12px 28px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s; white-space: nowrap;
+    }
+    .btn-analyse:hover { background: var(--orange-light); }
+    .btn-analyse:active { transform: scale(0.98); }
+    .btn-analyse:disabled { background: var(--grey-400); cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .results-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+    }
+    @media (max-width: 960px) { .results-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 620px) { .results-grid { grid-template-columns: 1fr; } }
+
+    .analysis-card { display: flex; flex-direction: column; gap: 20px; }
+
+    .tone-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .tone-tag {
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.2px;
+      background: var(--orange-pale); color: var(--orange);
+      border: 1px solid #FFCBA4;
+    }
+
+    .urgency-row { display: flex; align-items: center; gap: 14px; }
+
+    .urgency-badge {
+      min-width: 52px; height: 52px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; flex-shrink: 0;
+    }
+    .urgency-badge.green { background: var(--green-bg); color: var(--green); }
+    .urgency-badge.amber { background: var(--amber-bg); color: var(--amber); }
+    .urgency-badge.red   { background: var(--red-bg);   color: var(--red);   }
+
+    .urgency-bar-wrap { flex: 1; }
+    .urgency-bar-track { height: 8px; background: var(--grey-100); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+    .urgency-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .urgency-bar-fill.green { background: var(--green); }
+    .urgency-bar-fill.amber { background: var(--amber); }
+    .urgency-bar-fill.red   { background: var(--red);   }
+    .urgency-rationale { font-size: 12px; color: var(--grey-600); line-height: 1.5; }
+
+    .insight-block { display: flex; flex-direction: column; gap: 6px; }
+    .insight-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--grey-600); }
+    .insight-body { font-size: 14px; line-height: 1.65; color: var(--grey-800); }
+
+    .dont-block {
+      background: #FFF8F0; border: 1px solid #FFDAB8;
+      border-left: 4px solid var(--orange); border-radius: 8px; padding: 14px 16px;
+    }
+    .dont-block .insight-label { color: var(--orange); }
+
+    .response-card { display: flex; flex-direction: column; gap: 16px; }
+
+    .response-textarea {
+      width: 100%; min-height: 220px; padding: 16px;
+      border: 1.5px solid var(--grey-200); border-radius: 8px;
+      font-size: 14px; line-height: 1.7; color: var(--grey-800);
+      resize: vertical; font-family: inherit;
+      transition: border-color 0.15s; background: var(--grey-50);
+    }
+    .response-textarea:focus { outline: none; border-color: var(--orange); background: white; }
+
+    .response-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .response-hint { font-size: 12px; color: var(--grey-400); }
+
+    .btn-copy {
+      background: white; color: var(--orange);
+      border: 1.5px solid var(--orange); border-radius: 8px;
+      padding: 10px 22px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-copy:hover { background: var(--orange-pale); }
+    .btn-copy.copied { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--grey-400); }
+    .empty-state svg { opacity: 0.35; margin-bottom: 16px; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+
+    .error-banner {
+      background: var(--red-bg); border: 1px solid #FCA5A5;
+      border-radius: 8px; padding: 14px 16px; font-size: 14px; color: var(--red);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+
+    .row-divider { border: none; border-top: 1px solid var(--grey-200); }
+    .hidden { display: none !important; }
+
+    /* ACTION ITEMS */
+    .action-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border-radius: 8px;
+      background: var(--grey-50); border: 1px solid var(--grey-200);
+      cursor: pointer; transition: background 0.15s;
+      text-align: left; width: 100%;
+    }
+    .action-item:hover { background: var(--grey-100); }
+    .action-item.done { opacity: 0.5; }
+    .action-item.done .action-label { text-decoration: line-through; }
+
+    .action-priority {
+      min-width: 22px; height: 22px; border-radius: 50%;
+      background: var(--orange); color: white;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .action-item.done .action-priority { background: var(--grey-400); }
+
+    .action-content { flex: 1; }
+    .action-label { font-size: 13px; font-weight: 600; color: var(--grey-800); margin-bottom: 2px; }
+    .action-detail { font-size: 12px; color: var(--grey-600); line-height: 1.5; }
+
+    .action-type-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .action-type-badge.investigate { background: #EEF2FF; color: #4F46E5; }
+    .action-type-badge.communicate { background: var(--green-bg); color: var(--green); }
+    .action-type-badge.escalate    { background: var(--red-bg);   color: var(--red);   }
+    .action-type-badge.follow-up   { background: var(--amber-bg); color: var(--amber); }
+
+    .action-progress {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .action-progress-text { font-size: 12px; color: var(--grey-600); }
+    .action-reset { font-size: 11px; color: var(--grey-400); background: none; border: none; cursor: pointer; padding: 0; }
+    .action-reset:hover { color: var(--orange); }
+    .progress-bar-track { height: 4px; background: var(--grey-200); border-radius: 2px; margin-bottom: 12px; }
+    .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.3s ease; }
+  </style>
+</head>
+<body>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="keyModal">
+  <div class="modal">
+    <div class="modal-logo">
+      <div class="logo-mark" style="width:32px;height:32px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3C10 3 5 6 5 11C5 13.76 7.24 16 10 16C12.76 16 15 13.76 15 11C15 6 10 3 10 3Z" fill="white" opacity="0.9"/><circle cx="10" cy="11" r="2.5" fill="#FF6B00"/></svg>
+      </div>
+      <span style="font-size:18px;font-weight:700;color:var(--grey-800);">At<span style="color:var(--orange);">tune</span></span>
+    </div>
+    <h2>Enter your Anthropic API Key</h2>
+    <p>Attune uses Claude to analyse customer messages. Your key is stored only in this browser session and never sent anywhere except directly to Anthropic.</p>
+    <label for="apiKeyInput">API Key</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
+    <div class="modal-hint">Your key starts with <code>sk-ant-</code>. Get one at console.anthropic.com.</div>
+    <button class="btn-primary" onclick="saveKey()">Continue to Attune</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 3C10 3 5 6 5 11C5 13.76 7.24 16 10 16C12.76 16 15 13.76 15 11C15 6 10 3 10 3Z" fill="white" opacity="0.9"/>
+        <circle cx="10" cy="11" r="2.5" fill="#FF6B00"/>
+      </svg>
+    </div>
+    <span class="logo-text">At<span>tune</span></span>
+  </div>
+  <div class="logo-divider"></div>
+  <span class="logo-sub">EventMobi Customer Intelligence</span>
+  <div class="header-right">
+    <div class="key-indicator" onclick="promptNewKey()">
+      <div class="key-dot active" id="keyDot"></div>
+      <span id="keyLabel">API Key set</span>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- INPUT -->
+  <div>
+    <div class="section-label">01 — Customer Message</div>
+    <div class="card">
+      <div class="card-title">Paste the customer's message or conversation thread</div>
+      <div class="card-subtitle">Works with single messages or full threads — paste directly from HubSpot chat or email. Attune will read the whole conversation and focus its reply on the latest customer message.</div>
+      <textarea
+        id="customerMessage"
+        placeholder="Paste a single message or a full HubSpot chat/email thread here…"
+        spellcheck="true"
+      ></textarea>
+      <div class="input-footer">
+        <span class="char-count" id="charCount">0 characters</span>
+        <button class="btn-analyse" id="analyseBtn" onclick="analyse()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5L9.5 5.5L13.5 6L10.5 9L11.5 13L8 11L4.5 13L5.5 9L2.5 6L6.5 5.5L8 1.5Z" fill="currentColor"/>
+          </svg>
+          Analyse &amp; Respond
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsSection" class="hidden">
+    <div class="section-label">02 — Analysis &amp; Response</div>
+    <div id="errorBanner" class="error-banner hidden">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5V8.5M8 11H8.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="errorText"></span>
+    </div>
+
+    <div class="results-grid">
+
+      <!-- ANALYSIS PANEL -->
+      <div class="card analysis-card">
+
+        <div class="insight-block" id="threadBlock" style="display:none">
+          <div class="insight-label">Thread Summary</div>
+          <div class="insight-body" id="threadSummary"></div>
+          <div style="margin-top:8px;padding:10px 12px;background:var(--grey-100);border-radius:6px;font-size:12px;color:var(--grey-600);line-height:1.5;" id="conversationArc"></div>
+        </div>
+
+        <hr class="row-divider" id="threadDivider" style="display:none"/>
+
+        <div class="insight-block">
+          <div class="insight-label">Emotional Tone</div>
+          <div class="tone-list" id="toneList"></div>
+        </div>
+
+        <hr class="row-divider"/>
+
+        <div class="insight-block">
+          <div class="insight-label">Urgency Level</div>
+          <div class="urgency-row">
+            <div class="urgency-badge" id="urgencyBadge">—</div>
+            <div class="urgency-bar-wrap">
+              <div class="urgency-bar-track">
+                <div class="urgency-bar-fill" id="urgencyFill" style="width:0%"></div>
+              </div>
+              <div class="urgency-rationale" id="urgencyRationale"></div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="row-divider"/>
+
+        <div class="insight-block">
+          <div class="insight-label">What They Actually Need</div>
+          <div class="insight-body" id="whatTheyNeed"></div>
+        </div>
+
+        <hr class="row-divider"/>
+
+        <div class="insight-block dont-block">
+          <div class="insight-label">⚠ Don't Do This</div>
+          <div class="insight-body" id="dontDoThis"></div>
+        </div>
+
+      </div>
+
+      <!-- ACTION ITEMS -->
+      <div class="card">
+        <div class="card-title">Action Checklist</div>
+        <div class="card-subtitle">Issues to address, in order of priority. Tap to mark done.</div>
+        <div class="action-progress">
+          <span class="action-progress-text" id="actionProgressText">0 of 0 complete</span>
+          <button class="action-reset" onclick="resetActions()">Reset</button>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="actionProgressBar" style="width:0%"></div>
+        </div>
+        <div class="action-list" id="actionList"></div>
+      </div>
+
+      <!-- RESPONSE SUGGESTION -->
+      <div class="card response-card">
+        <div class="card-title">Suggested Response</div>
+        <div class="card-subtitle">Edit freely — this is a starting point, not a script.</div>
+        <textarea class="response-textarea" id="responseText" spellcheck="true"></textarea>
+        <div class="response-footer">
+          <span class="response-hint">Click to edit before sending</span>
+          <button class="btn-copy" id="copyBtn" onclick="copyResponse()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M2 10V2H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Copy Response
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="emptyState">
+    <div class="card empty-state">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <rect x="8" y="14" width="40" height="30" rx="4" stroke="#ADB5BD" stroke-width="2"/>
+        <path d="M16 22H40M16 28H32M16 34H28" stroke="#ADB5BD" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="42" cy="14" r="8" fill="#FF6B00"/>
+        <path d="M42 11V14.5M42 17H42.01" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p>Paste a customer message above and click<br><strong>Analyse &amp; Respond</strong> to get started.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let apiKey = sessionStorage.getItem('attune_key') || '';
+
+  // On load: show modal if no key
+  if (apiKey) {
+    document.getElementById('keyModal').classList.add('hidden');
+  } else {
+    document.getElementById('keyModal').classList.remove('hidden');
+  }
+
+  function saveKey() {
+    const val = document.getElementById('apiKeyInput').value.trim();
+    if (!val.startsWith('sk-ant-')) {
+      document.getElementById('apiKeyInput').style.borderColor = 'var(--red)';
+      return;
+    }
+    apiKey = val;
+    sessionStorage.setItem('attune_key', val);
+    document.getElementById('keyModal').classList.add('hidden');
+  }
+
+  function promptNewKey() {
+    document.getElementById('apiKeyInput').value = '';
+    document.getElementById('keyModal').classList.remove('hidden');
+  }
+
+  document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveKey();
+    document.getElementById('apiKeyInput').style.borderColor = '';
+  });
+
+  // Char count
+  const messageEl = document.getElementById('customerMessage');
+  messageEl.addEventListener('input', () => {
+    const len = messageEl.value.length;
+    document.getElementById('charCount').textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
+  });
+
+  function urgencyClass(level) {
+    if (level <= 3) return 'green';
+    if (level <= 6) return 'amber';
+    return 'red';
+  }
+
+  async function analyse() {
+    if (!apiKey) { promptNewKey(); return; }
+
+    const message = messageEl.value.trim();
+    if (!message) { messageEl.focus(); return; }
+
+    const analyseBtn = document.getElementById('analyseBtn');
+    const errorBanner = document.getElementById('errorBanner');
+
+    analyseBtn.disabled = true;
+    analyseBtn.innerHTML = `<div class="spinner"></div> Analysing…`;
+    errorBanner.classList.add('hidden');
+
+    const systemPrompt = `You are an expert in customer communication analysis for event technology support teams at EventMobi.
+
+You will receive either a single customer message OR a conversation thread. Threads may come from:
+- HubSpot chat (format: "Customer Name: message" or timestamped lines like "10:32 AM - Visitor: message")
+- HubSpot email threads (quoted reply chains with "From:", "Date:", "wrote:" headers, or "---------- Forwarded message ----------" separators)
+- Plain copied chat or email text
+
+When given a thread:
+1. Parse it into turns — identify each speaker as either CUSTOMER or REP
+2. Read the full arc — how has the customer's tone and urgency changed across the thread?
+3. Note what the rep has already tried or promised, so the suggested reply does not repeat it
+4. Base the emotional tone, urgency, and suggested reply on the MOST RECENT customer message, informed by the full context
+
+Respond with a JSON object only — no markdown, no code fences, no prose, just valid JSON.
+
+Respond with this exact JSON structure:
+{
+  "isThread": <true if this is a multi-turn conversation, false if single message>,
+  "threadSummary": "<if isThread is true: 1-2 sentences summarising what has already happened in the conversation and what the rep has already tried. If isThread is false, set to null>",
+  "conversationArc": "<if isThread is true: one sentence describing how the customer's tone has shifted across the thread, e.g. 'Started confused, became frustrated after the rep asked for information they had already provided.' If isThread is false, set to null>",
+  "emotionalTone": ["emotions", "from", "most", "recent", "customer", "message"],
+  "urgencyLevel": <integer 1-10>,
+  "urgencyRationale": "<one sentence explaining the urgency score>",
+  "whatTheyNeed": "<2-3 sentences cutting through the surface complaint to the real underlying need — practical, plain language>",
+  "dontDoThis": "<2-3 specific warnings about placating language, repetitive questions, or missteps to avoid — especially avoid repeating anything the rep has already said or asked in this thread>",
+  "suggestedReply": "<a full, polished reply to the customer that is empathetic, acknowledges timeline pressure, proposes a concrete next step, and uses urgent but calm language. Write it as if you are the support rep — first person, professional, warm. Do not repeat questions or promises already made in the thread. 3-5 sentences.>",
+  "actionItems": [
+    {
+      "priority": 1,
+      "label": "<short title for this task, e.g. 'Confirm registration data loss'>",
+      "detail": "<one sentence explaining exactly what the rep needs to do or check>",
+      "type": "<one of: investigate, communicate, escalate, follow-up>"
+    }
+  ]
+}
+
+For actionItems: list every discrete issue or step the rep must address, ordered by priority (1 = most urgent). Each item must be a concrete action, not a vague suggestion. Include at minimum: the immediate response step, any investigation or system checks needed, any escalation if required, and any follow-up to close the loop. Do not bundle multiple actions into one item. Typical lists have 3-6 items.
+
+Allowed emotions: frustrated, anxious, urgent, confused, disappointed, panicked, skeptical, overwhelmed
+Allowed action types: investigate, communicate, escalate, follow-up`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1024,
+          system: [
+            {
+              type: 'text',
+              text: systemPrompt,
+              cache_control: { type: 'ephemeral' },
+            },
+          ],
+          messages: [
+            {
+              role: 'user',
+              content: `Analyse this customer message:\n"""\n${message}\n"""`,
+            },
+          ],
+        }),
+      });
+
+      const payload = await res.json();
+
+      if (!res.ok) {
+        throw new Error(payload.error?.message || `API error ${res.status}`);
+      }
+
+      let text = payload.content[0].text.trim();
+      // Strip markdown code fences if the model added them
+      text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      const data = JSON.parse(text);
+      renderResults(data);
+
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('resultsSection').classList.remove('hidden');
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+      document.getElementById('errorText').textContent = err.message;
+      errorBanner.classList.remove('hidden');
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('resultsSection').classList.remove('hidden');
+    } finally {
+      analyseBtn.disabled = false;
+      analyseBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5L9.5 5.5L13.5 6L10.5 9L11.5 13L8 11L4.5 13L5.5 9L2.5 6L6.5 5.5L8 1.5Z" fill="currentColor"/></svg> Analyse &amp; Respond`;
+    }
+  }
+
+  function renderResults(data) {
+    // Tone tags
+    const toneList = document.getElementById('toneList');
+    toneList.innerHTML = '';
+    (data.emotionalTone || []).forEach(tone => {
+      const tag = document.createElement('span');
+      tag.className = 'tone-tag';
+      tag.textContent = tone.charAt(0).toUpperCase() + tone.slice(1);
+      toneList.appendChild(tag);
+    });
+
+    // Urgency
+    const level = Math.min(10, Math.max(1, data.urgencyLevel || 1));
+    const cls = urgencyClass(level);
+    const badge = document.getElementById('urgencyBadge');
+    badge.textContent = level;
+    badge.className = `urgency-badge ${cls}`;
+    const fill = document.getElementById('urgencyFill');
+    fill.style.width = `${level * 10}%`;
+    fill.className = `urgency-bar-fill ${cls}`;
+    document.getElementById('urgencyRationale').textContent = data.urgencyRationale || '';
+
+    // Thread context
+    const threadBlock = document.getElementById('threadBlock');
+    const threadDivider = document.getElementById('threadDivider');
+    if (data.isThread && data.threadSummary) {
+      document.getElementById('threadSummary').textContent = data.threadSummary;
+      document.getElementById('conversationArc').textContent = '↗ Arc: ' + (data.conversationArc || '');
+      threadBlock.style.display = '';
+      threadDivider.style.display = '';
+    } else {
+      threadBlock.style.display = 'none';
+      threadDivider.style.display = 'none';
+    }
+
+    document.getElementById('whatTheyNeed').textContent = data.whatTheyNeed || '';
+    document.getElementById('dontDoThis').textContent = data.dontDoThis || '';
+    document.getElementById('responseText').value = data.suggestedReply || '';
+
+    // Action items
+    const actionList = document.getElementById('actionList');
+    actionList.innerHTML = '';
+    (data.actionItems || []).forEach((item, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'action-item';
+      btn.dataset.index = i;
+      const typeClass = (item.type || 'investigate').toLowerCase().replace(/\s+/g, '-');
+      btn.innerHTML = `
+        <div class="action-priority">${item.priority ?? i + 1}</div>
+        <div class="action-content">
+          <div class="action-label">${item.label || ''}</div>
+          <div class="action-detail">${item.detail || ''}</div>
+        </div>
+        <span class="action-type-badge ${typeClass}">${item.type || ''}</span>
+      `;
+      btn.addEventListener('click', () => toggleAction(btn));
+      actionList.appendChild(btn);
+    });
+    updateActionProgress();
+  }
+
+  async function copyResponse() {
+    const text = document.getElementById('responseText').value;
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    const btn = document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L5.5 10.5L12 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Copy Response`;
+    }, 2500);
+  }
+
+  messageEl.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') analyse();
+  });
+
+  function toggleAction(btn) {
+    btn.classList.toggle('done');
+    updateActionProgress();
+  }
+
+  function updateActionProgress() {
+    const items = document.querySelectorAll('.action-item');
+    const done = document.querySelectorAll('.action-item.done').length;
+    const total = items.length;
+    document.getElementById('actionProgressText').textContent = `${done} of ${total} complete`;
+    document.getElementById('actionProgressBar').style.width = total ? `${(done / total) * 100}%` : '0%';
+  }
+
+  function resetActions() {
+    document.querySelectorAll('.action-item.done').forEach(el => el.classList.remove('done'));
+    updateActionProgress();
+  }
+</script>
+</body>
+</html>
