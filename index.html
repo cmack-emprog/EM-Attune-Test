@@ -264,6 +264,59 @@
     .row-divider { border: none; border-top: 1px solid var(--grey-200); }
     .hidden { display: none !important; }
 
+    /* HUBSPOT SECTION */
+    .hs-card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px 28px;
+      border-left: 4px solid #FF7A59;
+    }
+    .hs-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .hs-title-row { display: flex; align-items: center; gap: 10px; }
+    .hs-logo { width: 28px; height: 28px; border-radius: 6px; background: #FF7A59; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .hs-card-title { font-size: 15px; font-weight: 600; color: var(--grey-800); }
+    .hs-card-subtitle { font-size: 13px; color: var(--grey-600); margin-bottom: 16px; line-height: 1.5; }
+    .hs-connect-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; cursor: pointer; border: none; transition: background 0.15s; }
+    .hs-connect-badge.disconnected { background: var(--grey-100); color: var(--grey-600); }
+    .hs-connect-badge.disconnected:hover { background: var(--grey-200); }
+    .hs-connect-badge.connected { background: var(--green-bg); color: var(--green); }
+    .hs-input-row { display: flex; gap: 10px; align-items: center; }
+    .hs-url-input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--grey-200); border-radius: 8px; font-size: 13px; color: var(--grey-800); background: var(--grey-50); font-family: inherit; transition: border-color 0.15s; }
+    .hs-url-input:focus { outline: none; border-color: #FF7A59; background: white; }
+    .hs-url-input::placeholder { color: var(--grey-400); }
+    .btn-hs-load { background: #FF7A59; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; white-space: nowrap; transition: background 0.15s; }
+    .btn-hs-load:hover { background: #e86a4a; }
+    .btn-hs-load:disabled { background: var(--grey-400); cursor: not-allowed; }
+    .hs-no-token { margin-top: 14px; padding: 12px 14px; background: var(--amber-bg); border: 1px solid #FDE68A; border-radius: 8px; font-size: 13px; color: #92400E; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .btn-hs-token { background: var(--amber); color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .hs-results { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .hs-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .hs-result-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--grey-600); }
+    .hs-select-all { font-size: 11px; color: #FF7A59; background: none; border: none; cursor: pointer; padding: 0; }
+    .hs-select-all:hover { text-decoration: underline; }
+    .hs-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border-radius: 8px; border: 1.5px solid var(--grey-200); background: var(--grey-50); cursor: pointer; transition: border-color 0.15s, background 0.15s; text-align: left; width: 100%; }
+    .hs-item:hover { background: #FFF5F2; border-color: #FF7A59; }
+    .hs-item.selected { background: #FFF5F2; border-color: #FF7A59; }
+    .hs-item.selected .hs-check { background: #FF7A59; border-color: #FF7A59; }
+    .hs-item.selected .hs-check::after { opacity: 1; }
+    .hs-check { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #CED4DA; background: white; flex-shrink: 0; margin-top: 1px; position: relative; transition: background 0.15s, border-color 0.15s; }
+    .hs-check::after { content: ''; position: absolute; top: 2px; left: 5px; width: 5px; height: 9px; border: 2px solid white; border-top: none; border-left: none; transform: rotate(45deg); opacity: 0; }
+    .hs-item-body { flex: 1; min-width: 0; }
+    .hs-item-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .hs-type-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 3px; }
+    .hs-type-badge.chat  { background: #EEF2FF; color: #4F46E5; }
+    .hs-type-badge.email { background: var(--green-bg); color: var(--green); }
+    .hs-type-badge.ticket { background: var(--amber-bg); color: var(--amber); }
+    .hs-item-date { font-size: 11px; color: var(--grey-400); }
+    .hs-item-subject { font-size: 13px; font-weight: 600; color: var(--grey-800); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hs-item-preview { font-size: 12px; color: var(--grey-600); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn-hs-use { width: 100%; margin-top: 12px; background: var(--orange); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-hs-use:hover { background: var(--orange-light); }
+    .btn-hs-use:disabled { background: var(--grey-400); cursor: not-allowed; }
+    .hs-contact-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--grey-50); border: 1px solid var(--grey-200); border-radius: 8px; margin-bottom: 12px; }
+    .hs-contact-avatar { width: 32px; height: 32px; border-radius: 50%; background: #FF7A59; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .hs-contact-name { font-size: 13px; font-weight: 600; color: var(--grey-800); }
+    .hs-contact-meta { font-size: 12px; color: var(--grey-600); }
+
     /* ACTION ITEMS */
     .action-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -355,9 +408,70 @@
 
 <div class="app">
 
+  <!-- HUBSPOT LOOKUP -->
+  <div>
+    <div class="section-label">01 — Load from HubSpot <span style="font-weight:400;color:var(--grey-400);letter-spacing:0">(optional)</span></div>
+    <div class="hs-card">
+      <div class="hs-header">
+        <div class="hs-title-row">
+          <div class="hs-logo">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="10.5" cy="5.5" r="1.5" fill="white"/><path d="M10.5 7v2.5l-2 1.5H6L4 9.5v-3l2-1.5h1.5V3.5a1.5 1.5 0 1 1 1.5 1.5H8.5V5l2 2z" fill="white" opacity="0.85"/></svg>
+          </div>
+          <span class="hs-card-title">HubSpot Contact Lookup</span>
+        </div>
+        <button class="hs-connect-badge disconnected" id="hsTokenBtn" onclick="promptHsToken()">● Connect HubSpot</button>
+      </div>
+      <p class="hs-card-subtitle" style="margin-top:8px">Paste a HubSpot contact URL to load their last 2 weeks of chats, emails, and tickets — automatically.</p>
+
+      <div class="hs-input-row">
+        <input type="url" class="hs-url-input" id="hsUrlInput" placeholder="https://app.hubspot.com/contacts/12345/contact/67890/" />
+        <button class="btn-hs-load" id="hsLoadBtn" onclick="loadFromHubSpot()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Load History
+        </button>
+      </div>
+
+      <div class="hs-no-token" id="hsNoToken">
+        <span>No HubSpot token — results will be <strong>simulated</strong> for now. Add a token to pull real data.</span>
+        <button class="btn-hs-token" onclick="promptHsToken()">Add Token</button>
+      </div>
+
+      <div id="hsContactBar" class="hidden" style="margin-top:14px">
+        <div class="hs-contact-bar">
+          <div class="hs-contact-avatar" id="hsAvatar">?</div>
+          <div>
+            <div class="hs-contact-name" id="hsContactName">—</div>
+            <div class="hs-contact-meta" id="hsContactMeta">—</div>
+          </div>
+        </div>
+        <div class="hs-results" id="hsResults"></div>
+        <button class="btn-hs-use" id="hsUseBtn" onclick="useSelectedItems()" disabled>Load selected into message thread →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HubSpot token modal -->
+  <div class="modal-overlay hidden" id="hsTokenModal">
+    <div class="modal">
+      <div class="modal-logo">
+        <div class="hs-logo" style="width:32px;height:32px;border-radius:7px;">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="10.5" cy="5.5" r="1.5" fill="white"/><path d="M10.5 7v2.5l-2 1.5H6L4 9.5v-3l2-1.5h1.5V3.5a1.5 1.5 0 1 1 1.5 1.5H8.5V5l2 2z" fill="white" opacity="0.85"/></svg>
+        </div>
+        <span style="font-size:18px;font-weight:700;color:var(--grey-800);">HubSpot</span>
+      </div>
+      <h2>Connect your HubSpot account</h2>
+      <p>Create a Private App in HubSpot with <strong>crm.objects.contacts.read</strong>, <strong>conversations.read</strong>, and <strong>tickets.read</strong> scopes. Paste the token below.</p>
+      <label for="hsTokenInput">Private App Token</label>
+      <input type="password" id="hsTokenInput" placeholder="pat-na1-…" autocomplete="off" spellcheck="false" />
+      <div class="modal-hint">Found in HubSpot → Settings → Integrations → Private Apps. Stored in this session only.</div>
+      <button class="btn-primary" style="background:#FF7A59" onclick="saveHsToken()">Connect HubSpot</button>
+      <button onclick="document.getElementById('hsTokenModal').classList.add('hidden')" style="width:100%;margin-top:10px;background:none;border:none;color:var(--grey-600);font-size:13px;cursor:pointer;padding:8px;">Skip — use simulated data</button>
+    </div>
+  </div>
+
   <!-- INPUT -->
   <div>
-    <div class="section-label">01 — Customer Message</div>
+    <div class="section-label">02 — Customer Message</div>
     <div class="card">
       <div class="card-title">Paste the customer's message or conversation thread</div>
       <div class="card-subtitle">Works with single messages or full threads — paste directly from HubSpot chat or email. Attune will read the whole conversation and focus its reply on the latest customer message.</div>
@@ -380,7 +494,7 @@
 
   <!-- RESULTS -->
   <div id="resultsSection" class="hidden">
-    <div class="section-label">02 — Analysis &amp; Response</div>
+    <div class="section-label">03 — Analysis &amp; Response</div>
     <div id="errorBanner" class="error-banner hidden">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5V8.5M8 11H8.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       <span id="errorText"></span>
@@ -715,6 +829,214 @@ Allowed action types: investigate, communicate, escalate, follow-up`;
   messageEl.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') analyse();
   });
+
+  // ─── HUBSPOT INTEGRATION ─────────────────────────────────────────────────
+
+  let hsToken = sessionStorage.getItem('attune_hs_token') || '';
+  let hsItems = [];
+
+  function updateHsTokenUI() {
+    const badge = document.getElementById('hsTokenBtn');
+    const noToken = document.getElementById('hsNoToken');
+    if (hsToken) {
+      badge.textContent = '✓ HubSpot connected';
+      badge.className = 'hs-connect-badge connected';
+      noToken.classList.add('hidden');
+    } else {
+      badge.textContent = '● Connect HubSpot';
+      badge.className = 'hs-connect-badge disconnected';
+      noToken.classList.remove('hidden');
+    }
+  }
+  updateHsTokenUI();
+
+  function promptHsToken() {
+    document.getElementById('hsTokenInput').value = '';
+    document.getElementById('hsTokenModal').classList.remove('hidden');
+  }
+
+  function saveHsToken() {
+    const val = document.getElementById('hsTokenInput').value.trim();
+    if (val) { hsToken = val; sessionStorage.setItem('attune_hs_token', val); }
+    document.getElementById('hsTokenModal').classList.add('hidden');
+    updateHsTokenUI();
+  }
+
+  function parseHubSpotContactId(url) {
+    const m = url.match(/\/contact(?:s)?\/\d+\/(?:contact|record\/0-1)\/(\d+)/);
+    return m ? m[1] : null;
+  }
+
+  async function loadFromHubSpot() {
+    const url = document.getElementById('hsUrlInput').value.trim();
+    if (!url) { document.getElementById('hsUrlInput').focus(); return; }
+    const contactId = parseHubSpotContactId(url);
+    if (!contactId) {
+      alert('Could not read a contact ID from that URL. Paste the full HubSpot contact page URL.');
+      return;
+    }
+    const btn = document.getElementById('hsLoadBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner"></div> Loading…`;
+    try {
+      if (hsToken) {
+        await fetchRealHubSpotData(contactId);
+      } else {
+        await fetchSimulatedHubSpotData(contactId);
+      }
+    } catch(err) {
+      alert('Error loading HubSpot data: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Load History`;
+    }
+  }
+
+  // ── REAL HUBSPOT API (needs Private App token) ────────────────────────────
+  async function fetchRealHubSpotData(contactId) {
+    const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+    const headers = { 'Authorization': `Bearer ${hsToken}`, 'Content-Type': 'application/json' };
+
+    const contactRes = await fetch(
+      `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}?properties=firstname,lastname,email,company`,
+      { headers }
+    );
+    if (!contactRes.ok) throw new Error('HubSpot API error — check your token and scopes.');
+    const contact = await contactRes.json();
+    const props = contact.properties || {};
+    const name = [props.firstname, props.lastname].filter(Boolean).join(' ') || 'Unknown';
+
+    const ticketsRes = await fetch(`https://api.hubapi.com/crm/v3/objects/tickets/search`, {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        filterGroups: [{ filters: [
+          { propertyName: 'associations.contact', operator: 'EQ', value: contactId },
+          { propertyName: 'createdate', operator: 'GTE', value: twoWeeksAgo.toString() },
+        ]}],
+        properties: ['subject', 'content', 'createdate'],
+        limit: 10,
+      })
+    });
+    const ticketsData = await ticketsRes.json();
+
+    const convsRes = await fetch(
+      `https://api.hubapi.com/conversations/v3/conversations/threads?associatedContactId=${contactId}&limit=10`,
+      { headers }
+    );
+    const convsData = await convsRes.json();
+
+    hsItems = [];
+    (ticketsData.results || []).forEach(t => hsItems.push({
+      type: 'ticket', id: t.id,
+      subject: t.properties.subject || 'Support ticket',
+      preview: (t.properties.content || '').slice(0, 120),
+      date: t.properties.createdate,
+      raw: `[Support Ticket — ${t.properties.subject || 'No subject'}]\n${t.properties.content || ''}`,
+    }));
+    (convsData.results || []).forEach(c => hsItems.push({
+      type: 'chat', id: c.id,
+      subject: c.latestMessageSubject || 'Chat conversation',
+      preview: (c.latestMessagePreview || '').slice(0, 120),
+      date: c.latestMessageTimestamp || c.createdAt,
+      raw: `[HubSpot Chat — ${new Date(c.latestMessageTimestamp || c.createdAt).toLocaleDateString()}]\n${c.latestMessagePreview || ''}`,
+    }));
+
+    renderHsContact(name, props.company || props.email || '', contactId);
+    renderHsItems();
+  }
+
+  // ── SIMULATED DATA (no token) ─────────────────────────────────────────────
+  async function fetchSimulatedHubSpotData(contactId) {
+    await new Promise(r => setTimeout(r, 900));
+    hsItems = [
+      {
+        type: 'ticket', id: '1',
+        subject: 'Registrants not receiving confirmation emails',
+        preview: 'We launched registration 3 days ago and at least 40 attendees have told us they never received a confirmation. Our event is in 6 days.',
+        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        raw: `[Support Ticket — Registrants not receiving confirmation emails]\nWe launched registration 3 days ago and at least 40 attendees have told us they never received a confirmation email. Our event is in 6 days and this is urgent. Can someone please look into this today?`,
+      },
+      {
+        type: 'chat', id: '2',
+        subject: 'Chat: Agenda builder not saving sessions',
+        preview: 'The agenda builder keeps logging me out every time I try to save a session. I\'ve lost my work twice now.',
+        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        raw: `[HubSpot Chat — ${new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString()}]\nSarah Mitchell: The agenda builder keeps logging me out every time I try to save a session. I've lost my work twice now.\nRep: Hi Sarah! Can you tell me which browser you're using?\nSarah Mitchell: Chrome. Latest version. This has happened 4 times today.\nRep: I've flagged this to our engineering team. Try saving in shorter intervals for now.\nSarah Mitchell: That's not really a solution when I'm losing 30 minutes of work each time.`,
+      },
+      {
+        type: 'email', id: '3',
+        subject: 'Re: Onboarding — questions about speaker portal',
+        preview: 'Following up on my earlier question — we still haven\'t heard back and our speaker deadline is tomorrow.',
+        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        raw: `[Email Thread — Re: Onboarding — questions about speaker portal]\nFrom: Sarah Mitchell <sarah@brightfield.com>\n\nFollowing up on my earlier question — we still haven't heard back and our speaker deadline is tomorrow. We need to know if speakers can upload their own bios or if we have to do it manually for all 28 of them.\n\nFrom: EventMobi Support\n\nHi Sarah, thanks for reaching out! I'll look into this and get back to you shortly.`,
+      },
+    ];
+    renderHsContact('Sarah Mitchell (simulated)', 'Brightfield Events', contactId);
+    renderHsItems();
+  }
+
+  function renderHsContact(name, company, contactId) {
+    document.getElementById('hsAvatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('hsContactName').textContent = name;
+    document.getElementById('hsContactMeta').textContent = `${company} · Contact ${contactId} · Last 2 weeks`;
+    document.getElementById('hsContactBar').classList.remove('hidden');
+  }
+
+  function renderHsItems() {
+    const container = document.getElementById('hsResults');
+    container.innerHTML = '';
+    if (!hsItems.length) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--grey-400);text-align:center;padding:16px 0;">No activity found in the last 2 weeks.</p>';
+      return;
+    }
+    const header = document.createElement('div');
+    header.className = 'hs-result-header';
+    header.innerHTML = `<span class="hs-result-label">${hsItems.length} item${hsItems.length !== 1 ? 's' : ''} found</span><button class="hs-select-all" onclick="selectAllHsItems()">Select all</button>`;
+    container.appendChild(header);
+
+    hsItems.forEach((item, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'hs-item';
+      btn.dataset.index = i;
+      const dateStr = item.date ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+      btn.innerHTML = `
+        <div class="hs-check"></div>
+        <div class="hs-item-body">
+          <div class="hs-item-meta">
+            <span class="hs-type-badge ${item.type}">${item.type}</span>
+            <span class="hs-item-date">${dateStr}</span>
+          </div>
+          <div class="hs-item-subject">${item.subject}</div>
+          <div class="hs-item-preview">${item.preview}</div>
+        </div>`;
+      btn.addEventListener('click', () => toggleHsItem(btn));
+      container.appendChild(btn);
+    });
+    document.getElementById('hsUseBtn').disabled = true;
+  }
+
+  function toggleHsItem(btn) {
+    btn.classList.toggle('selected');
+    document.getElementById('hsUseBtn').disabled = document.querySelectorAll('.hs-item.selected').length === 0;
+  }
+
+  function selectAllHsItems() {
+    document.querySelectorAll('.hs-item').forEach(b => b.classList.add('selected'));
+    document.getElementById('hsUseBtn').disabled = false;
+  }
+
+  function useSelectedItems() {
+    const selected = [...document.querySelectorAll('.hs-item.selected')]
+      .map(btn => hsItems[parseInt(btn.dataset.index)].raw);
+    if (!selected.length) return;
+    const combined = selected.join('\n\n---\n\n');
+    const existing = messageEl.value.trim();
+    messageEl.value = existing ? `${combined}\n\n---\n\n${existing}` : combined;
+    const len = messageEl.value.length;
+    document.getElementById('charCount').textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
+    messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    messageEl.focus();
+  }
 
   function toggleAction(btn) {
     btn.classList.toggle('done');
