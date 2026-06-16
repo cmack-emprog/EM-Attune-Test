@@ -363,6 +363,40 @@
     .action-reset:hover { color: var(--orange); }
     .progress-bar-track { height: 4px; background: var(--grey-200); border-radius: 2px; margin-bottom: 12px; }
     .progress-bar-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width 0.3s ease; }
+
+    /* KNOWLEDGE BASE PANEL */
+    .kb-article-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .kb-article-item {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 14px; border-radius: 8px;
+      background: var(--grey-50); border: 1px solid var(--grey-200);
+    }
+
+    .kb-article-link {
+      font-size: 13px; font-weight: 600; color: var(--orange);
+      text-decoration: none; line-height: 1.4;
+    }
+    .kb-article-link:hover { text-decoration: underline; }
+
+    .kb-article-excerpt {
+      font-size: 12px; color: var(--grey-600); line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .kb-keywords {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;
+    }
+    .kb-keyword-tag {
+      padding: 3px 9px; border-radius: 12px; font-size: 11px;
+      font-weight: 600; background: var(--orange-pale); color: var(--orange);
+      border: 1px solid #FFCBA4;
+    }
+
+    .kb-empty {
+      font-size: 13px; color: var(--grey-400); font-style: italic; padding: 8px 0;
+    }
   </style>
 </head>
 <body>
@@ -581,6 +615,20 @@
       </div>
 
     </div>
+
+    <!-- KNOWLEDGE BASE PANEL -->
+    <div id="kbPanel" class="hidden" style="margin-top:24px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <div class="card-title" style="margin-bottom:0;">Knowledge Base References</div>
+          <span style="font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--orange-pale);color:var(--orange);border:1px solid #FFCBA4;">Auto-fetched</span>
+        </div>
+        <div class="card-subtitle" style="margin-bottom:12px;">Articles retrieved from help.eventmobi.com and used to ground the analysis and suggested reply above.</div>
+        <div class="kb-keywords" id="kbKeywordTags"></div>
+        <div class="kb-article-list" id="kbArticleList"></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- EMPTY STATE -->
@@ -652,8 +700,18 @@
     const errorBanner = document.getElementById('errorBanner');
 
     analyseBtn.disabled = true;
-    analyseBtn.innerHTML = `<div class="spinner"></div> Analysing…`;
+    analyseBtn.innerHTML = `<div class="spinner"></div> Searching KB…`;
     errorBanner.classList.add('hidden');
+
+    const kbKeywords = extractKeywords(message);
+    let kbArticles = [];
+    try { kbArticles = await searchKnowledgeBase(kbKeywords); } catch (_) {}
+
+    analyseBtn.innerHTML = `<div class="spinner"></div> Analysing…`;
+
+    const kbContext = kbArticles.length
+      ? `\n\n## Relevant EventMobi Knowledge Base Articles\n\nThe following documentation was automatically retrieved from help.eventmobi.com and is directly relevant to this ticket. Ground your action items and suggested reply in this product-specific guidance wherever applicable:\n\n${kbArticles.map((a, i) => `### ${i + 1}. ${a.title}\nSource: ${a.url}\n\n${a.content}`).join('\n\n---\n\n')}`
+      : '';
 
     const systemPrompt = `You are an expert in customer communication analysis for event technology support teams at EventMobi.
 
@@ -694,7 +752,7 @@ Respond with this exact JSON structure:
 For actionItems: list every discrete issue or step the rep must address, ordered by priority (1 = most urgent). Each item must be a concrete action, not a vague suggestion. Include at minimum: the immediate response step, any investigation or system checks needed, any escalation if required, and any follow-up to close the loop. Do not bundle multiple actions into one item. Typical lists have 3-6 items.
 
 Allowed emotions: frustrated, anxious, urgent, confused, disappointed, panicked, skeptical, overwhelmed
-Allowed action types: investigate, communicate, escalate, follow-up`;
+Allowed action types: investigate, communicate, escalate, follow-up${kbContext}`;
 
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -736,6 +794,7 @@ Allowed action types: investigate, communicate, escalate, follow-up`;
       text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
       const data = JSON.parse(text);
       renderResults(data);
+      renderKbPanel(kbArticles, kbKeywords);
 
       document.getElementById('emptyState').classList.add('hidden');
       document.getElementById('resultsSection').classList.remove('hidden');
@@ -1054,6 +1113,88 @@ Allowed action types: investigate, communicate, escalate, follow-up`;
   function resetActions() {
     document.querySelectorAll('.action-item.done').forEach(el => el.classList.remove('done'));
     updateActionProgress();
+  }
+
+  // ─── KNOWLEDGE BASE ──────────────────────────────────────────────────────────
+
+  function extractKeywords(text, count = 3) {
+    const stop = new Set([
+      'the','a','an','is','are','was','were','be','been','being','have','has','had',
+      'do','does','did','will','would','shall','should','may','might','must','can','could',
+      'i','we','you','he','she','they','it','my','our','your','his','her','their','its',
+      'this','that','these','those','and','but','or','nor','for','so','yet','to','of',
+      'in','on','at','by','with','from','up','about','into','through','not','no','if',
+      'then','than','when','where','how','what','who','which','why','all','any','both',
+      'just','very','also','still','already','now','here','there','please','thank','thanks',
+      'hi','hello','hey','am','im','ive','dont','doesnt','cant','wont','get','got','getting',
+      'use','using','used','need','needs','needed','want','wants','wanted','help','like','know',
+      'see','try','trying','tried','make','made','making','take','took','come','came','go',
+      'went','going','look','looking','worked','find','found','keep','kept','give','gave',
+      'think','thought','let','put','set','send','sent','said','say','says','tell','told',
+      'show','showed','able','back','new','good','great','right','same','more','less',
+      'many','much','some','other','each','every','few','first','last','next','long',
+      'well','even','only','most','such','after','before','over','again','once','always',
+      'never','often','since','while','though','because','until','unless','whether','however',
+      'work','works','working','really','actually','quite','rather','almost','seem','seems'
+    ]);
+    const words = text.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length > 3 && !stop.has(w) && !/^\d+$/.test(w));
+    const freq = {};
+    words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+    return Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count)
+      .map(([word]) => word);
+  }
+
+  async function searchKnowledgeBase(keywords) {
+    const query = keywords.join(' ');
+    const res = await fetch(
+      `https://help.eventmobi.com/api/v2/help_center/en-us/articles/search.json?query=${encodeURIComponent(query)}&per_page=5`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    const tmp = document.createElement('div');
+    return (data.results || []).slice(0, 2).map(article => {
+      tmp.innerHTML = article.body || '';
+      const text = (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
+      return {
+        title: article.title,
+        url: article.html_url,
+        content: text.slice(0, 2000),
+        excerpt: text.slice(0, 220),
+      };
+    });
+  }
+
+  function renderKbPanel(articles, keywords) {
+    const list = document.getElementById('kbArticleList');
+    const tagRow = document.getElementById('kbKeywordTags');
+    list.innerHTML = '';
+    tagRow.innerHTML = '';
+    keywords.forEach(kw => {
+      const tag = document.createElement('span');
+      tag.className = 'kb-keyword-tag';
+      tag.textContent = kw;
+      tagRow.appendChild(tag);
+    });
+    if (!articles.length) {
+      list.innerHTML = `<p class="kb-empty">No relevant articles found for these keywords. Analysis proceeded without KB context.</p>`;
+    } else {
+      articles.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'kb-article-item';
+        item.innerHTML = `
+          <a class="kb-article-link" href="${a.url}" target="_blank" rel="noopener noreferrer">${a.title}</a>
+          <div class="kb-article-excerpt">${a.excerpt}</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+    document.getElementById('kbPanel').classList.remove('hidden');
   }
 </script>
 </body>
