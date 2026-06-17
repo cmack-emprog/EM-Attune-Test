@@ -1197,29 +1197,49 @@ Allowed action types: investigate, communicate, escalate, follow-up${kbContext}`
 
   async function searchKnowledgeBase(query) {
     console.log('[Attune KB] Search query:', query);
-    const target = `https://help.eventmobi.com/api/v2/help_center/en-us/articles/search.json?query=${encodeURIComponent(query)}&per_page=5`;
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
-    console.log('[Attune KB] Proxy URL:', proxyUrl);
+    const searchUrl = `https://help.eventmobi.com/hc/en-us/search?query=${encodeURIComponent(query)}`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(searchUrl)}`;
+    console.log('[Attune KB] Fetching search page via proxy:', proxyUrl);
     const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
     console.log('[Attune KB] Response status:', res.status);
-    if (!res.ok) {
-      console.warn('[Attune KB] Proxy returned non-OK status:', res.status);
-      return [];
+    if (!res.ok) { console.warn('[Attune KB] Proxy non-OK:', res.status); return []; }
+
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // Collect all article links from the search results page
+    const linkEls = [...doc.querySelectorAll(
+      'a[href*="/hc/en-us/articles/"], a[href*="/en/articles/"], a[href*="/knowledge/"]'
+    )];
+    console.log('[Attune KB] Raw article links found in HTML:', linkEls.length);
+
+    const seen = new Set();
+    const articles = [];
+
+    for (const a of linkEls) {
+      const href = a.getAttribute('href') || '';
+      const url = href.startsWith('http') ? href : `https://help.eventmobi.com${href}`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      const title = a.textContent.trim();
+      if (!title || title.length < 8) continue;
+
+      // Walk up to find the result container, then look for a snippet element
+      const container = a.closest('li, article, [class*="result"], [class*="search"]') || a.parentElement;
+      const snippetEl = container?.querySelector(
+        'p, [class*="body"], [class*="snippet"], [class*="preview"], [class*="excerpt"], [class*="description"]'
+      );
+      const snippet = snippetEl?.textContent?.trim() || '';
+
+      articles.push({ title, url, content: snippet.slice(0, 2000), excerpt: snippet.slice(0, 220) });
+      if (articles.length >= 2) break;
     }
-    const data = await res.json();
-    console.log('[Attune KB] Total results:', data.count ?? (data.results || []).length, '| Returning top:', Math.min(2, (data.results || []).length));
-    (data.results || []).slice(0, 5).forEach((a, i) => console.log(`[Attune KB] Result ${i + 1}:`, a.title, a.html_url));
-    const tmp = document.createElement('div');
-    return (data.results || []).slice(0, 2).map(article => {
-      tmp.innerHTML = article.body || '';
-      const text = (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
-      return {
-        title: article.title,
-        url: article.html_url,
-        content: text.slice(0, 2000),
-        excerpt: text.slice(0, 220),
-      };
-    });
+
+    console.log('[Attune KB] Parsed articles:', articles.length
+      ? articles.map((a, i) => `\n  ${i + 1}. "${a.title}" — ${a.url}`).join('')
+      : 'none found');
+    return articles;
   }
 
   function renderKbPanel(articles, searchPhrase, productArea) {
