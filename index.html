@@ -1198,12 +1198,14 @@ Allowed action types: investigate, communicate, escalate, follow-up${kbContext}`
   async function searchKnowledgeBase(query) {
     console.log('[Attune KB] Search query:', query);
     const target = `https://help.eventmobi.com/api/v2/help_center/en-us/articles/search.json?query=${encodeURIComponent(query)}&per_page=5`;
-    const res = await fetch(
-      `https://corsproxy.io/?${encodeURIComponent(target)}`,
-      { signal: AbortSignal.timeout(10000) }
-    );
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
+    console.log('[Attune KB] Proxy URL:', proxyUrl);
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
     console.log('[Attune KB] Response status:', res.status);
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.warn('[Attune KB] Proxy returned non-OK status:', res.status);
+      return [];
+    }
     const data = await res.json();
     console.log('[Attune KB] Total results:', data.count ?? (data.results || []).length, '| Returning top:', Math.min(2, (data.results || []).length));
     (data.results || []).slice(0, 5).forEach((a, i) => console.log(`[Attune KB] Result ${i + 1}:`, a.title, a.html_url));
